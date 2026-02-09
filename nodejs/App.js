@@ -1,19 +1,18 @@
 const express = require('express')
+const config = require('config')
+const router = require('./router')
+const userRouter = require('./components/Users/router')
+
 const app = express()
-const router = express.Router()
 
-const PORT = 3000
+require('./libs/database')
 
-router.get('/', (req, res) => {
-  res.send('Hello World!')
-})
-
-router.post('/', (req, res) => {
-  res.send('POST request to the homepage')
-})
-
+app.use(express.json())
 app.use(router)
+app.use(userRouter)
 
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`)
+const port = config.get('server.port')
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
 })
