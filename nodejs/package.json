@@ -9,6 +9,8 @@
   "author": "Markelov I.A.",
   "license": "ISC",
   "dependencies": {
+    "ajv": "^7.1.0",
+    "ajv-formats": "^3.0.1",
     "config": "^4.2.0",
     "express": "^5.2.1",
     "pg-promise": "^12.6.0"

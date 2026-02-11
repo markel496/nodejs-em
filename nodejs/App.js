@@ -1,7 +1,7 @@
 const express = require('express')
 const config = require('config')
 const router = require('./router')
-const userRouter = require('./components/Users/router')
+const userRouter = require('./components/users/router')
 
 const app = express()
 
