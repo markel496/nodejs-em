@@ -1,4 +1,4 @@
-const db = require('../../../libs/database')
+const db = require('#libs/database')
 
 const changeUser = async ({ id, name, surname }) => {
   const updatedUser = await db.oneOrNone(

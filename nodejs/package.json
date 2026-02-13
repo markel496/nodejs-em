@@ -4,7 +4,14 @@
   "description": "",
   "main": "App.js",
   "scripts": {
-    "start": "nodemon App.js"
+    "postinstall": "npx link-module-alias",
+    "start": "npm run postinstall && nodemon App.js"
+  },
+  "_moduleAliases": {
+    "#classes": "./classes",
+    "#components": "./components",
+    "#libs": "./libs",
+    "#helpers": "./helpers"
   },
   "author": "Markelov I.A.",
   "license": "ISC",
@@ -16,6 +23,7 @@
     "pg-promise": "^12.6.0"
   },
   "devDependencies": {
+    "link-module-alias": "^1.2.0",
     "nodemon": "^3.1.11"
   }
 }

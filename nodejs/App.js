@@ -1,11 +1,11 @@
 const express = require('express')
 const config = require('config')
 const router = require('./router')
-const userRouter = require('./components/users/router')
+const userRouter = require('#components/users/router')
+
+require('#libs/database')
 
 const app = express()
-
-require('./libs/database')
 
 app.use(express.json())
 app.use(router)
