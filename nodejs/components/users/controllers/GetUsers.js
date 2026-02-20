@@ -36,7 +36,7 @@ class GetUsersController extends BaseController {
     const limit = Number(lpage)
     const offset = (Number(page) - 1) * limit
 
-    const users = await getUsersService({ limit, offset })
+    const users = await getUsersService(limit, offset)
 
     return users.map(this.getUser)
   }

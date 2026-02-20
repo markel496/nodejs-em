@@ -4,6 +4,7 @@ const router = require('./router')
 const userRouter = require('#components/users/router')
 
 require('#libs/database')
+require('#libs/redis')
 
 const app = express()
 

@@ -11,7 +11,8 @@
     "#classes": "./classes",
     "#components": "./components",
     "#libs": "./libs",
-    "#helpers": "./helpers"
+    "#helpers": "./helpers",
+    "#middleware": "./middleware"
   },
   "author": "Markelov I.A.",
   "license": "ISC",
@@ -19,7 +20,10 @@
     "ajv": "^7.1.0",
     "ajv-formats": "^3.0.1",
     "config": "^4.2.0",
+    "date-fns": "^4.1.0",
     "express": "^5.2.1",
+    "ioredis": "^5.9.3",
+    "jsonwebtoken": "^9.0.3",
     "pg-promise": "^12.6.0"
   },
   "devDependencies": {

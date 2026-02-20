@@ -1,7 +1,7 @@
 const BaseController = require('#classes/BaseController')
-const createUsersService = require('../services/createUsers')
+const createUserService = require('../services/createUser')
 
-class CreateUsersController extends BaseController {
+class CreateUserController extends BaseController {
   get bodySchema() {
     return {
       type: 'object',
@@ -24,7 +24,7 @@ class CreateUsersController extends BaseController {
   async controller(req) {
     const { name, surname, age, password, email } = req.body
 
-    const result = await createUsersService({
+    const result = await createUserService({
       name,
       surname,
       age,
@@ -36,4 +36,4 @@ class CreateUsersController extends BaseController {
   }
 }
 
-module.exports = new CreateUsersController()
+module.exports = new CreateUserController()
