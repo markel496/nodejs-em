@@ -2,6 +2,8 @@ const express = require('express')
 const config = require('config')
 const router = require('./router')
 const userRouter = require('#components/users/router')
+const errorHandler = require('#middleware/errorHandler')
+const notFound = require('#middleware/notFound')
 
 require('#libs/database')
 require('#libs/redis')
@@ -11,6 +13,8 @@ const app = express()
 app.use(express.json())
 app.use(router)
 app.use(userRouter)
+app.use(notFound)
+app.use(errorHandler)
 
 const port = config.get('server.port')
 

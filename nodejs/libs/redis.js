@@ -7,7 +7,20 @@ const redis = new Redis({
   port,
   host,
   password,
-  db
+  db,
+  retryStrategy(times) {
+    const maxAttempts = 5
+
+    if (times > maxAttempts) {
+      console.error('Redis: превышено количество попыток подключения')
+      return null // ОСТАНОВИТЬ переподключение
+    }
+
+    console.log(`Redis: попытка подключения №${times}`)
+    return 2000 // задержка 2 секунды
+  },
+
+  maxRetriesPerRequest: 3 // ограничение попыток на одну команду
 })
 
 redis.on('connect', () => {

@@ -12,7 +12,8 @@
     "#components": "./components",
     "#libs": "./libs",
     "#helpers": "./helpers",
-    "#middleware": "./middleware"
+    "#middleware": "./middleware",
+    "#errors": "./errors"
   },
   "author": "Markelov I.A.",
   "license": "ISC",

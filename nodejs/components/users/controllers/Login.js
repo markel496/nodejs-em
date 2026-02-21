@@ -1,4 +1,5 @@
-const BaseController = require('#Classes/BaseController')
+const BaseController = require('#classes/BaseController')
+const { AuthorizationError } = require('#errors')
 const getUserByEmailAndPasswordService = require('../services/getUserByEmailAndPassword')
 const getTokensService = require('../services/getTokens')
 
@@ -21,7 +22,10 @@ class LoginController extends BaseController {
     const user = await getUserByEmailAndPasswordService(email, password)
 
     if (!user) {
-      return 'Password or email is incorrect' // Тут бы еще 401 отдавать
+      throw new AuthorizationError({
+        code: 'authorization_failed',
+        text: 'Email или пароль не верен'
+      })
     }
 
     const session = {

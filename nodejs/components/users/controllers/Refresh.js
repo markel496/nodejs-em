@@ -1,4 +1,5 @@
-const BaseController = require('#Classes/BaseController')
+const BaseController = require('#classes/BaseController')
+const { AuthorizationError } = require('#errors')
 const getUserByRefreshToken = require('../services/getUserByRefreshToken')
 const getTokensService = require('../services/getTokens')
 const config = require('config')
@@ -22,7 +23,10 @@ class RefreshController extends BaseController {
     const user = await getUserByRefreshToken(refreshToken)
 
     if (!user) {
-      return 'Refresh token is incorrect' // Тут бы еще 401 отдавать
+      throw new AuthorizationError({
+        code: 'invalid_token',
+        text: 'Токен не валидный'
+      })
     }
 
     const now = Date.now()
@@ -32,7 +36,10 @@ class RefreshController extends BaseController {
     const tokenExpireDate = new Date(expire).getTime()
 
     if (now > tokenExpireDate) {
-      throw new Error('Refresh token is deprecated')
+      throw new AuthorizationError({
+        code: 'invalid_token',
+        text: 'Токен устарел'
+      })
     }
 
     const session = {

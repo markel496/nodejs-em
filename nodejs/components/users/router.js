@@ -4,7 +4,7 @@ const CreateUserController = require('./controllers/CreateUser')
 const LoginController = require('./controllers/Login')
 const RefreshController = require('./controllers/Refresh')
 const changeUserController = require('./controllers/changeUser')
-const checkAuth = require('#middleware/authMiddleware')
+const checkAuth = require('#middleware/checkAuth')
 
 const router = express.Router()
 

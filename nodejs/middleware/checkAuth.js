@@ -1,5 +1,6 @@
 const config = require('config')
 const jwt = require('jsonwebtoken')
+const { AuthorizationError } = require('#errors')
 const getSessionByTokenService = require('#components/users/services/getSessionByToken')
 
 const checkAuth = async (req, res, next) => {
@@ -9,7 +10,6 @@ const checkAuth = async (req, res, next) => {
   try {
     const key = config.get('auth.token_key')
     jwt.verify(authorization, key)
-
     const session = await getSessionByTokenService(authorization)
 
     if (!session) {
@@ -19,12 +19,17 @@ const checkAuth = async (req, res, next) => {
     const tokenExpireDate = new Date(session.expire).getTime()
 
     if (now > tokenExpireDate) {
-      throw new Error('Authorization error')
+      throw new Error('Токен устарел')
     }
 
     req.state = { user: session }
   } catch (error) {
-    return res.status(401).send(error.message)
+    return next(
+      new AuthorizationError({
+        code: 'invalid_token',
+        text: error.message
+      })
+    )
   }
 
   next()
