@@ -22,11 +22,14 @@ const getTokens = async (session) => {
   const token = jwt.sign(tokensData, key)
   const refreshToken = jwt.sign(refreshTokensData, key)
 
+  const userId = session.id
+
   await db.none('UPDATE users SET refresh_token = $1 WHERE id = $2', [
     refreshToken,
-    session.id
+    userId
   ])
-  await redis.set(`token_${token}`, JSON.stringify(tokensData))
+  await redis.set(`access_token:${token}`, JSON.stringify(tokensData))
+  await redis.set(`user_session:${userId}`, `access_token:${token}`)
 
   return { token, refreshToken }
 }

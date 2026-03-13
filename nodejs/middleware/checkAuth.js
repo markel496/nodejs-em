@@ -26,7 +26,7 @@ const checkAuth = async (req, res, next) => {
   } catch (error) {
     return next(
       new AuthorizationError({
-        code: 'invalid_token',
+        code: 'INVALID_TOKEN',
         text: error.message
       })
     )

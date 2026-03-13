@@ -1,9 +1,9 @@
 const BaseController = require('#classes/BaseController')
-const { AuthorizationError } = require('#errors')
 const getUserByRefreshToken = require('../services/getUserByRefreshToken')
 const getTokensService = require('../services/getTokens')
 const config = require('config')
 const jwt = require('jsonwebtoken')
+const removeExistingSession = require('../services/removeExistingSession')
 
 class RefreshController extends BaseController {
   get bodySchema() {
@@ -22,13 +22,6 @@ class RefreshController extends BaseController {
 
     const user = await getUserByRefreshToken(refreshToken)
 
-    if (!user) {
-      throw new AuthorizationError({
-        code: 'invalid_token',
-        text: 'Токен не валидный'
-      })
-    }
-
     const now = Date.now()
     const key = config.get('auth.token_key')
     const { expire } = jwt.verify(refreshToken, key)
@@ -37,19 +30,22 @@ class RefreshController extends BaseController {
 
     if (now > tokenExpireDate) {
       throw new AuthorizationError({
-        code: 'invalid_token',
+        code: 'INVALID_TOKEN',
         text: 'Токен устарел'
       })
     }
+
+    await removeExistingSession(user.id)
 
     const session = {
       id: user.id,
       name: user.name,
       surname: user.surname,
-      email: user.email
+      email: user.email,
+      role: user.role
     }
 
-    const tokens = getTokensService(session)
+    const tokens = await getTokensService(session)
 
     return tokens
   }

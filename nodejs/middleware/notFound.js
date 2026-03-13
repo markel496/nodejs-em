@@ -1,4 +1,4 @@
-const NotFoundError = require('#errors/NotFound')
+const { NotFoundError } = require('#errors')
 
 const notFound = (req, res, next) => {
   next(

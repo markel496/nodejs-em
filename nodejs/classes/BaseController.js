@@ -1,6 +1,7 @@
 const Ajv = require('ajv').default
 const addFormats = require('ajv-formats')
 const { ValidationError } = require('#errors')
+const { BadRequestError } = require('#errors')
 
 const ajv = new Ajv({ allErrors: true })
 addFormats(ajv, ['email'])
@@ -16,6 +17,9 @@ class BaseController {
   }
 
   get querySchema() {
+    return null
+  }
+  get paramsSchema() {
     return null
   }
 
@@ -55,6 +59,18 @@ class BaseController {
       }
     }
 
+    if (this.paramsSchema) {
+      const validate = ajv.compile(this.paramsSchema)
+
+      const isValid = validate(req.params)
+
+      if (!isValid) {
+        const errors = validate.errors.map(this.#buildRequestError)
+
+        errorsList.params = errors
+      }
+    }
+
     return errorsList
   }
 
@@ -62,8 +78,16 @@ class BaseController {
     const errorsList = this.validate(req)
 
     if (Object.keys(errorsList).length > 0) {
+      if (errorsList.hasOwnProperty('params')) {
+        throw new BadRequestError({
+          code: 'BAD_REQUEST_ERROR',
+          text: 'Неверный запрос',
+          data: errorsList
+        })
+      }
+
       throw new ValidationError({
-        code: 'validation_error',
+        code: 'VALIDATION_ERROR',
         text: 'Ошибка валидации',
         data: errorsList
       })
@@ -73,6 +97,7 @@ class BaseController {
       const result = await this.controller(req)
       res.status(200).json(result)
     } catch (error) {
+      console.log(error)
       return next(error)
     }
   }

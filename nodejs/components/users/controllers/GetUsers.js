@@ -15,12 +15,16 @@ class GetUsersController extends BaseController {
         page: {
           type: 'string',
           pattern: '^[1-9]\\d*$'
+        },
+        role: {
+          type: 'string',
+          enum: ['admin', 'mentor', 'student', '']
         }
       }
     }
   }
 
-  getUser(user) {
+  formatUser(user) {
     return {
       id: user.id,
       name: user.name,
@@ -31,14 +35,15 @@ class GetUsersController extends BaseController {
   }
 
   async controller(req) {
-    const { page, limit: lpage } = req.query
+    const { page, limit: lpage, role } = req.query
 
     const limit = Number(lpage)
     const offset = (Number(page) - 1) * limit
+    const roleFilter = role || undefined
 
-    const users = await getUsersService(limit, offset)
+    const users = await getUsersService(limit, offset, roleFilter)
 
-    return users.map(this.getUser)
+    return users.map(this.formatUser)
   }
 }
 

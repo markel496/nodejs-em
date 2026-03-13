@@ -3,10 +3,7 @@ const errorHandler = (error, req, res, next) => {
     return res.status(error.statusCode).json(error.toObject())
   }
 
-  return res.status(500).json({
-    code: 'INTERNAL_ERROR',
-    text: 'Internal server error'
-  })
+  return res.status(500).json(error)
 }
 
 module.exports = errorHandler
