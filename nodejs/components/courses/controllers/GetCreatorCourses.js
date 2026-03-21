@@ -1,7 +1,7 @@
 const BaseController = require('#classes/BaseController')
-const getMentorCoursesService = require('../services/getMentorCourses')
+const getCreatorCoursesService = require('../services/getCreatorCourses')
 
-class GetMentorCoursesController extends BaseController {
+class GetCreatorCoursesController extends BaseController {
   get paramsSchema() {
     return {
       type: 'object',
@@ -22,23 +22,13 @@ class GetMentorCoursesController extends BaseController {
       properties: {
         limit: {
           type: 'string',
-          pattern: '^[1-9]\\d*$'
+          pattern: '^$|^[1-9]\\d*$'
         },
         page: {
           type: 'string',
-          pattern: '^[1-9]\\d*$'
+          pattern: '^$|^[1-9]\\d*$'
         }
       }
-    }
-  }
-
-  formatCourse(course) {
-    return {
-      id: course.id,
-      title: course.title,
-      description: course.description,
-      created_at: course.created_at,
-      updated_at: course.updated_at
     }
   }
 
@@ -46,14 +36,15 @@ class GetMentorCoursesController extends BaseController {
     const { page, limit: lpage } = req.query
     const { id } = req.params
 
-    const mentorId = Number(id)
+    const creatorId = Number(id)
     const limit = Number(lpage) || 20
-    const offset = (Number(page) - 1) * limit || 0
+    const currentPage = Number(page) || 1
+    const offset = (currentPage - 1) * limit
 
-    const courses = await getMentorCoursesService({ mentorId, limit, offset })
+    const courses = await getCreatorCoursesService({ creatorId, limit, offset })
 
-    return courses.map(this.formatCourse)
+    return courses
   }
 }
 
-module.exports = new GetMentorCoursesController()
+module.exports = new GetCreatorCoursesController()

@@ -1,13 +1,19 @@
-const db = require('#libs/database')
+const { prisma } = require('#libs/prisma')
 
 const getUsers = async (limit, offset, role) => {
-  const users = await db.any(
-    `SELECT * FROM users
-     WHERE ($3::text IS NULL OR role = $3)
-     ORDER BY id
-     LIMIT $1 OFFSET $2`,
-    [limit, offset, role]
-  )
+  const where = {}
+
+  if (role) {
+    where.role = role
+  }
+
+  const users = await prisma.user.findMany({
+    where,
+    orderBy: { id: 'asc' },
+    take: limit,
+    skip: offset,
+    omit: { password: true, refreshToken: true }
+  })
 
   return users
 }

@@ -12,7 +12,7 @@ class RefreshController extends BaseController {
       additionalProperties: false,
       required: ['refreshToken'],
       properties: {
-        refreshToken: { type: 'string' }
+        refreshToken: { type: 'string', minLength: 1 }
       }
     }
   }

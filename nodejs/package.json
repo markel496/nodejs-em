@@ -5,7 +5,7 @@
   "main": "App.js",
   "scripts": {
     "postinstall": "npx link-module-alias",
-    "start": "npm run postinstall && nodemon App.js"
+    "start": "npm run postinstall && nodemon --delay 200ms --ignore backups/ App.js"
   },
   "_moduleAliases": {
     "#classes": "./classes",
@@ -18,7 +18,8 @@
   "author": "Markelov I.A.",
   "license": "ISC",
   "dependencies": {
-    "ajv": "^7.1.0",
+    "@prisma/client": "^6.19.2",
+    "ajv": "^8.18.0",
     "ajv-formats": "^3.0.1",
     "config": "^4.2.0",
     "date-fns": "^4.1.0",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "link-module-alias": "^1.2.0",
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.11",
+    "prisma": "^6.19.2"
   }
 }

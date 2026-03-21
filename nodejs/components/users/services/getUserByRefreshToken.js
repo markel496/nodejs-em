@@ -1,11 +1,11 @@
-const db = require('#libs/database')
+const { prisma } = require('#libs/prisma')
 const { AuthorizationError } = require('#errors')
 
 const getUserByRefreshToken = async (refreshToken) => {
-  const user = await db.oneOrNone(
-    'SELECT * FROM users WHERE refresh_token = $1',
-    [refreshToken]
-  )
+  const user = await prisma.user.findFirst({
+    where: { refreshToken },
+    omit: { password: true }
+  })
 
   if (!user) {
     throw new AuthorizationError({

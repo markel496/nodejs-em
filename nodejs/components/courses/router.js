@@ -8,7 +8,7 @@ const DeleteCourse = require('./controllers/DeleteCourse')
 const GetCourse = require('./controllers/GetCourse')
 const EnrollStudent = require('./controllers/EnrollStudent')
 
-const GetMentorCourses = require('./controllers/GetMentorCourses')
+const GetCreatorCourses = require('./controllers/GetCreatorCourses')
 const GetStudentCourses = require('./controllers/GetStudentCourses')
 const GetAllCourses = require('./controllers/GetAllCourses')
 
@@ -33,7 +33,7 @@ router.get(
   '/mentors/:id/courses',
   checkAuth,
   checkRole('student'),
-  GetMentorCourses.run
+  GetCreatorCourses.run
 )
 
 router.get(

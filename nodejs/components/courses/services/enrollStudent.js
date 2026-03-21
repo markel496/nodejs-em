@@ -1,49 +1,51 @@
-const db = require('#libs/database')
+const { prisma, Prisma } = require('#libs/prisma')
 const { NotFoundError, ConflictError } = require('#errors')
 
 const enrollStudent = async ({ courseId, studentId }) => {
-  const existsCourse = await db.oneOrNone(
-    `SELECT 1 FROM courses
-     WHERE id = $1`,
-    [courseId]
-  )
+  const course = await prisma.course.findUnique({
+    where: { id: courseId }
+  })
 
-  if (!existsCourse) {
+  if (!course) {
     throw new NotFoundError({
       code: 'COURSE_NOT_FOUND',
       text: `Course with id=${courseId} not found`
     })
   }
 
-  const existsStudent = await db.oneOrNone(
-    `SELECT 1 FROM users
-     WHERE id = $1 AND role = 'student'`,
-    [studentId]
-  )
+  const student = await prisma.user.findFirst({
+    where: { id: studentId, role: 'student' }
+  })
 
-  if (!existsStudent) {
+  if (!student) {
     throw new NotFoundError({
       code: 'STUDENT_NOT_FOUND',
       text: `Student with id=${studentId} not found`
     })
   }
 
-  const enrolled = await db.oneOrNone(
-    `INSERT INTO course_students (course_id, student_id)
-     VALUES ($1, $2)
-     ON CONFLICT DO NOTHING
-     RETURNING id
-    `,
-    [courseId, studentId]
-  )
-
-  if (!enrolled) {
-    throw new ConflictError({
-      code: 'STUDENT_ALREADY_ENROLLED',
-      text: `Student ${studentId} is already enrolled in course ${courseId}`
+  try {
+    await prisma.courseStudent.create({
+      data: {
+        courseId: courseId,
+        studentId: studentId
+      }
     })
+
+    return true
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2002'
+    ) {
+      throw new ConflictError({
+        code: 'STUDENT_ALREADY_ENROLLED',
+        text: `Student ${studentId} is already enrolled in course ${courseId}`
+      })
+    }
+
+    throw error
   }
-  return true
 }
 
 module.exports = enrollStudent

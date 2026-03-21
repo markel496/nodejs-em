@@ -1,16 +1,22 @@
-const db = require('#libs/database')
+const { prisma } = require('#libs/prisma')
 const hashPassword = require('#helpers/hashPassword')
 const { AuthorizationError } = require('#errors')
 
 const getUserByEmailAndPassword = async (email, password) => {
-  const hashedPassword = hashPassword(password) // Пароли надо скрывать
-
-  const user = await db.oneOrNone(
-    'SELECT * FROM users WHERE email = $1 AND password = $2',
-    [email, hashedPassword]
-  )
+  const user = await prisma.user.findUnique({
+    where: { email }
+  })
 
   if (!user) {
+    throw new AuthorizationError({
+      code: 'AUTH_FAILED',
+      text: 'Email или пароль не верен'
+    })
+  }
+
+  const hashedPassword = hashPassword(password) // Пароли надо скрывать
+
+  if (user.password !== password) {
     throw new AuthorizationError({
       code: 'AUTH_FAILED',
       text: 'Email или пароль не верен'

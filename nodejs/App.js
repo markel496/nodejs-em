@@ -6,7 +6,7 @@ const coursesRouter = require('#components/courses/router')
 const errorHandler = require('#middleware/errorHandler')
 const notFound = require('#middleware/notFound')
 
-require('#libs/database')
+// require('#libs/database')
 require('#libs/redis')
 
 const app = express()

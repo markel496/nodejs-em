@@ -1,30 +1,29 @@
-const db = require('#libs/database')
+const { prisma, Prisma } = require('#libs/prisma')
 const { RegistrationError } = require('#errors')
 const hashPassword = require('#helpers/hashPassword.js')
 
-const createUser = async (userData) => {
-  const { name, surname, age, password, email } = userData
+const createUser = async (data) => {
+  const hashedPassword = hashPassword(data.password) // Пароли надо скрывать
 
-  const hashedPassword = hashPassword(password) // Пароли надо скрывать
-
-  const created = await db.oneOrNone(
-    `
-     INSERT INTO users (name, surname, age, password, email)
-     VALUES ($1, $2, $3, $4, $5)
-     ON CONFLICT (email) DO NOTHING
-     RETURNING id
-    `,
-    [name, surname, age, hashedPassword, email]
-  )
-
-  if (!created) {
-    throw new RegistrationError({
-      code: 'USER_EMAIL_EXISTS',
-      text: `Пользователь с почтой '${email}' уже существует`
+  try {
+    await prisma.user.create({
+      data: { ...data, password: hashedPassword }
     })
-  }
 
-  return true
+    return true
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2002'
+    ) {
+      throw new RegistrationError({
+        code: 'USER_EMAIL_EXISTS',
+        text: `Пользователь с почтой '${data.email}' уже существует`
+      })
+    }
+
+    throw error
+  }
 }
 
 module.exports = createUser

@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  student
+  mentor
+  admin
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model User {
+  id              Int               @id @default(autoincrement())
+  name            String            @db.VarChar(255)
+  surname         String?           @db.VarChar(255)
+  age             Int?
+  password        String?           @db.VarChar(255)
+  email           String?           @unique @db.VarChar(255)
+  refreshToken    String            @default("unknown") @db.VarChar(512) @map("refresh_token")
+  role            UserRole          @default(student)
+
+  createdCourses  Course[]           @relation("CreatedCourses")
+  enrollments     CourseStudent[]
+
+  @@map("users")
+}
+
+model Course {
+  id              Int               @id @default(autoincrement())
+  title           String            @unique @db.VarChar(255)
+  description     String?
+  creatorId       Int                @map("creator_id")
+  createdAt       DateTime?         @default(now()) @db.Timestamp(6) @map("created_at")
+  updatedAt       DateTime?         @db.Timestamp(6) @map("updated_at")
+  
+  creator         User            @relation("CreatedCourses", fields: [creatorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  enrollments     CourseStudent[]
+
+  @@map("courses")
+}
+
+model CourseStudent{
+  id          Int       @id @default(autoincrement())
+  courseId    Int       @map("course_id")
+  studentId   Int       @map("student_id")
+  enrolledAt  DateTime? @default(now()) @db.Timestamp(6) @map("enrolled_at")
+
+  course  Course @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  student User   @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([courseId, studentId])
+  @@map("course_students")
+}

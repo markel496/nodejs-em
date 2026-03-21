@@ -5,16 +5,15 @@ class GetUsersController extends BaseController {
   get querySchema() {
     return {
       type: 'object',
-      required: ['limit', 'page'],
       additionalProperties: false,
       properties: {
         limit: {
           type: 'string',
-          pattern: '^[1-9]\\d*$'
+          pattern: '^$|^[1-9]\\d*$'
         },
         page: {
           type: 'string',
-          pattern: '^[1-9]\\d*$'
+          pattern: '^$|^[1-9]\\d*$'
         },
         role: {
           type: 'string',
@@ -24,26 +23,16 @@ class GetUsersController extends BaseController {
     }
   }
 
-  formatUser(user) {
-    return {
-      id: user.id,
-      name: user.name,
-      surname: user.surname,
-      age: user.age,
-      email: user.email
-    }
-  }
-
   async controller(req) {
     const { page, limit: lpage, role } = req.query
 
-    const limit = Number(lpage)
-    const offset = (Number(page) - 1) * limit
-    const roleFilter = role || undefined
+    const limit = Number(lpage) || 20
+    const currentPage = Number(page) || 1
+    const offset = (currentPage - 1) * limit
 
-    const users = await getUsersService(limit, offset, roleFilter)
+    const users = await getUsersService(limit, offset, role)
 
-    return users.map(this.formatUser)
+    return users
   }
 }
 

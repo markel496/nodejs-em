@@ -1,27 +1,24 @@
-const db = require('#libs/database')
-
+const { prisma } = require('#libs/prisma')
 const getAllCourses = async ({ limit, offset }) => {
-  const courses = await db.any(
-    `
-    SELECT 
-      c.id,
-      c.title,
-      c.description,
-      c.created_at,
-      c.updated_at,
-      u.id AS creator_id,
-      u.name AS creator_name,
-      u.surname AS creator_surname,
-      u.age AS creator_age,
-      u.email AS creator_email,
-      u.role AS creator_role
-    FROM courses c
-    JOIN users u ON u.id = c.creator_id
-    ORDER BY c.created_at DESC
-    LIMIT $1 OFFSET $2
-    `,
-    [limit, offset]
-  )
+  const courses = await prisma.course.findMany({
+    orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+    include: {
+      creator: {
+        select: {
+          id: true,
+          name: true,
+          surname: true,
+          age: true,
+          email: true,
+          role: true
+        }
+      }
+    },
+    take: limit,
+    skip: offset,
+    omit: { creatorId: true }
+  })
+
   return courses
 }
 

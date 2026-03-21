@@ -21,7 +21,7 @@ class UpdateCourseController extends BaseController {
       additionalProperties: false,
       properties: {
         title: { type: 'string', minLength: 3 },
-        description: { type: 'string' }
+        description: { type: 'string', minLength: 3 }
       },
       // Должно быть передано хотя бы одно поле
       anyOf: [{ required: ['title'] }, { required: ['description'] }]

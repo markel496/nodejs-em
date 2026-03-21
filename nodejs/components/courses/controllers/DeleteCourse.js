@@ -18,7 +18,7 @@ class DeleteCourseController extends BaseController {
   async controller(req) {
     const { id } = req.params
 
-    const result = await deleteCourseService({ courseId: Number(id) })
+    const result = await deleteCourseService(Number(id))
 
     return result
   }
