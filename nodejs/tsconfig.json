@@ -1,0 +1,54 @@
+{
+  // Visit https://aka.ms/tsconfig to read more about this file
+  "compilerOptions": {
+    // File Layout
+    "rootDir": "./src",
+    "outDir": "./dist",
+    // Environment Settings
+    // See also https://aka.ms/tsconfig/module
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2022",
+    // For nodejs:
+    "lib": ["esnext"],
+    "types": ["node"],
+
+    // Other Outputs
+    "sourceMap": true,
+
+    // Stricter Typechecking Options
+    "noUncheckedIndexedAccess": true,
+    // Style Options
+    // "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    // "noFallthroughCasesInSwitch": true,
+    // "noPropertyAccessFromIndexSignature": true,
+    "paths": {
+      "#classes/*": ["./src/classes/*"],
+      "#components/*": ["./src/components/*"],
+      "#consts/*": ["./src/consts/*"],
+      "#libs/*": ["./src/libs/*"],
+      "#helpers/*": ["./src/helpers/*"],
+      "#middleware/*": ["./src/middleware/*"],
+      "#middleware": ["./src/middleware/index.ts"],
+      "#errors/*": ["./src/errors/*"],
+      "#errors": ["./src/errors/index.ts"],
+      "#types/*": ["./src/types/*"],
+      "#schemas/*": ["./src/schemas/*"]
+    },
+    // Recommended Options
+    "allowJs": true,
+    "strict": true,
+    "verbatimModuleSyntax": false,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true
+  },
+
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "prisma.config.ts"]
+}

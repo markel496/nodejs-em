@@ -3,17 +3,58 @@
   "version": "1.0.0",
   "description": "",
   "main": "App.js",
+  "type": "module",
   "scripts": {
-    "postinstall": "npx link-module-alias",
-    "start": "npm run postinstall && nodemon --delay 200ms --ignore backups/ App.js"
+    "dev": "tsx watch --conditions=development src/App.ts",
+    "clean": "rimraf dist",
+    "build": "npm run clean && tsc",
+    "start": "node dist/App.js"
   },
-  "_moduleAliases": {
-    "#classes": "./classes",
-    "#components": "./components",
-    "#libs": "./libs",
-    "#helpers": "./helpers",
-    "#middleware": "./middleware",
-    "#errors": "./errors"
+  "imports": {
+    "#classes/*": {
+      "development": "./src/classes/*.ts",
+      "default": "./dist/classes/*.js"
+    },
+    "#components/*": {
+      "development": "./src/components/*.ts",
+      "default": "./dist/components/*.js"
+    },
+    "#consts/*": {
+      "development": "./src/consts/*.ts",
+      "default": "./dist/consts/*.js"
+    },
+    "#libs/*": {
+      "development": "./src/libs/*.ts",
+      "default": "./dist/libs/*.js"
+    },
+    "#helpers/*": {
+      "development": "./src/helpers/*.ts",
+      "default": "./dist/helpers/*.js"
+    },
+    "#middleware/*": {
+      "development": "./src/middleware/*.ts",
+      "default": "./dist/middleware/*.js"
+    },
+    "#middleware": {
+      "development": "./src/middleware/index.ts",
+      "default": "./dist/middleware/index.js"
+    },
+    "#errors": {
+      "development": "./src/errors/index.ts",
+      "default": "./dist/errors/index.js"
+    },
+    "#errors/*": {
+      "development": "./src/errors/*.ts",
+      "default": "./dist/errors/*.js"
+    },
+    "#types/*": {
+      "development": "./src/types/*.ts",
+      "default": "./dist/types/*.js"
+    },
+    "#schemas/*": {
+      "development": "./src/schemas/*.ts",
+      "default": "./dist/schemas/*.js"
+    }
   },
   "author": "Markelov I.A.",
   "license": "ISC",
@@ -22,15 +63,19 @@
     "ajv": "^8.18.0",
     "ajv-formats": "^3.0.1",
     "config": "^4.2.0",
-    "date-fns": "^4.1.0",
     "express": "^5.2.1",
     "ioredis": "^5.9.3",
     "jsonwebtoken": "^9.0.3",
     "pg-promise": "^12.6.0"
   },
   "devDependencies": {
-    "link-module-alias": "^1.2.0",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.6.0",
     "nodemon": "^3.1.11",
-    "prisma": "^6.19.2"
+    "prisma": "^6.19.2",
+    "rimraf": "^6.1.3",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3"
   }
 }
